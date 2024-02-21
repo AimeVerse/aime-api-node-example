@@ -9,7 +9,11 @@ This example demonstrates how to use the wormholes node client to send and recei
 npm install
 
 # configure:
-Edit the `.env` file and set the `AIME_SERVER_URL` and `AIME_SERVER_TOKEN` to the values provided by Aime.
+Edit/Create the `.env` file and set the following:
+ - `AIME_SERVER_URL` 
+ - `AIME_SERVER_TOKEN` 
+ - `AIME_SPACE_ID`
+to the values provided by Aime.
 
 # usage:
 

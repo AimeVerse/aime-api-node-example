@@ -1,4 +1,4 @@
-Wormholes node client
+Aime Api Changelog
 =========================
 
 0.0.14:

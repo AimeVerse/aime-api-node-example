@@ -6,27 +6,20 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
+  "files": ["/dist"],
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "tsc && node ./dist/xtest.js"
+    "dev": "tsc && node ./dist/aime-api-client.js",
+    "client":"tsc && node ./dist/aime-api-client.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fridman-tamir/Wormholes.git"
+    "url": "git+https://github.com/AimeVerse/aime-api-node-example.git"
   },
-  "keywords": [
-    "AIME",
-    "Distributed",
-    "Server",
-    "Client",
-    "WORMHOLES"
-  ],
+  "keywords": ["AIME","API","Client","Wormholes"],
   "license": "GPL-3.0",
-  "homepage": "https://github.com/fridman-tamir/Wormhole/Wormholes#readme",
+  "homepage": "https://github.com/AimeVerse/aime-api-node-example#readme",
   "devDependencies": {
     "@types/node": "^18.0.0",
     "@types/ws": "^8.5.3",
