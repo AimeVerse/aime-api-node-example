@@ -65,7 +65,9 @@ async function start() {
     //get an answer from the aime server
     const getAnswer = AimeApi.getAnswer(userId, conversationId, prompt)
     const messageResponse = await Wormholes.sendSync(getAnswer, true)
-    console.log("[Avatar Answer] " +  messageResponse)
+    console.log(prompt, " -> ",prompt)
+    console.log("Aime response -> ")
+    console.dir(messageResponse)
 
 
     
