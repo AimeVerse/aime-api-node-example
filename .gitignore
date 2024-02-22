@@ -39,6 +39,9 @@ jspm_packages/
 # TypeScript v1 declaration files
 typings/
 
+# dist
+dist/
+
 # Optional npm cache directory
 .npm
 
@@ -68,3 +71,4 @@ typings/
 # Webstorm
 .idea/*
 docs/
+

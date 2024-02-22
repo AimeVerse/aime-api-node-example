@@ -76,6 +76,7 @@ async function start() {
     console.log(prompt2, " -> ",prompt2)
     console.log("Aime response -> ")
     console.dir(messageResponse2)
+    Wormholes.close()
     
 }
 
