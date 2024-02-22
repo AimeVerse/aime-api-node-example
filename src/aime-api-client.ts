@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { _x, Wormholes, _xem, WormholeEvents, _xlog } from "xpell-node"
+
 import {AimeApi} from "./aime/api.js"
 
 
@@ -60,7 +61,7 @@ async function start() {
 
     const userId = sessionResponse._user_id
     const conversationId = sessionResponse._conversation_id
-    const prompt = "Hello I am a new users"
+    const prompt = "Tell me about the moon"
 
     //get an answer from the aime server
     const getAnswer = AimeApi.getAnswer(userId, conversationId, prompt)
@@ -69,7 +70,12 @@ async function start() {
     console.log("Aime response -> ")
     console.dir(messageResponse)
 
-
+    const prompt2 = "What is the capital of Israel?"
+    const getAnswer2 = AimeApi.getAnswer(userId, conversationId, prompt2)
+    const messageResponse2 = await Wormholes.sendSync(getAnswer2, true)
+    console.log(prompt2, " -> ",prompt2)
+    console.log("Aime response -> ")
+    console.dir(messageResponse2)
     
 }
 
