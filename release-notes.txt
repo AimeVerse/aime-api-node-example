@@ -1,7 +1,9 @@
 Aime Api Changelog
 =========================
 
-0.0.14:
+0.0.1:
 -------
-- Wormholes included
+- Wormholes configuration
+- API Class
+- API Client
 
