@@ -72,3 +72,4 @@ dist/
 .idea/*
 docs/
 
+package-lock.json
