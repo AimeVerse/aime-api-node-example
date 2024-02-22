@@ -96,7 +96,11 @@ export class AimeAPI {
         }
     }
 
-     async connect() {
+    /**
+     * This function connects to the Aime server
+     * @returns Promise<boolean> - true if the connection is successful
+     */
+    async connect() {
         return new Promise((resolve, reject) => {
             _xem.on(WormholeEvents.WormholeOpen, async (data: any) => {
                 const serverAuth = this._xp.getServerAuthXMessage(this._wormhole_token)
@@ -114,6 +118,9 @@ export class AimeAPI {
     }
 
 
+    /**
+     * This function disconnects from the Aime server
+     */
     async disconnect() {
         Wormholes.close()
     }
