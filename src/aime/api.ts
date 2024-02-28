@@ -24,6 +24,7 @@ export const AimeApiList: {[name: string]: XpellMessage} = {
             _space_id: undefined
         }
     },
+
     "get-answer": {
         _module: "conversation-manager",
         _op: "get-answer",
@@ -31,6 +32,7 @@ export const AimeApiList: {[name: string]: XpellMessage} = {
             _user_id: undefined,
             _conversation_id: undefined,
             _prompt: undefined,
+            _generate_voice: false
         }
     }
     
@@ -60,7 +62,7 @@ class AimeApiMessageGenerator {
         return msg
     }
 
-    getAnswerXMessage(userId: string, conversationId: string, prompt: string) {
+    getAnswerXMessage(userId: string, conversationId: string, prompt: string,voice:boolean) {
         if (!userId) throw new Error("User ID is required")
         if (!conversationId) throw new Error("Conversation ID is required")
         if (!prompt) throw new Error("Prompt is required")
@@ -68,6 +70,7 @@ class AimeApiMessageGenerator {
         msg._params._user_id = userId
         msg._params._conversation_id = conversationId
         msg._params._prompt = prompt
+        msg._params._generate_voice = voice
         return msg
     }
 
@@ -158,14 +161,16 @@ export class AimeAPI {
      * This function sends a prompt to the Aime server and returns the response
      * @param prompt - The prompt to send to the Aime server (can be a question in a conversation or a command to the NPC)
      * @param session - The session object returned from startAnonymousSession
+     * @param generateVoice - If true, the server will generate a voice response
      * @returns AimePromptResponse
      * {
      *     _conversation_item_id: string, // the id of the conversation item
      *     _npc_response: string // the response from the NPC
+     *     _voice_url?: string // the url of the voice response (if generated)
      * }
      */
-    async sendPrompt(prompt: string,session:AimeSession): Promise<AimePromptResponse>{
-        const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt)
+    async sendPrompt(prompt: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
+        const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt,generateVoice)
         return await Wormholes.sendSync(getAnswerCommand, true)
     }
 

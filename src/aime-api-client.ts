@@ -35,18 +35,13 @@ async function main() {
         //send a prompt to the avatar and display the response
         const prompt = "hi, my name is bond, james bond"
         
-        _xlog.log("Q:" ,prompt)
-        const answer1 = await aimeApi.sendPrompt(prompt,session)
-        _xlog.log("A:",answer1._npc_response)
-        _xlog.log("Response conversation-item-id",answer1._conversation_item_id)
-
 
         //send another prompt to the avatar and display the response
         const prompt2 = "what is aime avatar?"
         _xlog.log("Q:" , prompt2)
         const answer2 = await aimeApi.sendPrompt(prompt2,session)
         _xlog.log("A:",answer2._npc_response)
-        _xlog.log("Response conversation-item-id:",answer2._conversation_item_id)
+        _xlog.log("Response ",answer2)
 
     } catch (error) {
         _xlog.error("Error starting anonymous session")
