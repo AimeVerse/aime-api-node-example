@@ -37,11 +37,17 @@ async function main() {
         
 
         //send another prompt to the avatar and display the response
-        const prompt2 = "what is aime avatar?"
-        _xlog.log("Q:" , prompt2)
-        const answer2 = await aimeApi.sendPrompt(prompt2,session)
-        _xlog.log("A:",answer2._npc_response)
-        _xlog.log("Response ",answer2)
+        // const prompt2 = "what is aime avatar?"
+        // _xlog.log("Q:" , prompt2)
+        // const answer2 = await aimeApi.sendPrompt(prompt2,session)
+        // _xlog.log("A:",answer2._npc_response)
+        // _xlog.log("Response ",answer2)
+        
+        
+
+        const fileUrl = "../../assets/test.mp3" //project runs in dist/aime 
+        const answer = await aimeApi.sendVoicePrompt(fileUrl,session)
+        _xlog.log("A:",answer)
 
     } catch (error) {
         _xlog.error("Error starting anonymous session")

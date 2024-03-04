@@ -1,7 +1,12 @@
 //AIME API calls
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from 'url';
+import {  dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { _x, Wormholes, _xem, WormholeEvents, _xlog } from "xpell-node"
-
-
 import { XpellMessage, AimeSession, AimePromptResponse} from "./api-types.js"
 
 export const AimeApiList: {[name: string]: XpellMessage} = {
@@ -32,6 +37,17 @@ export const AimeApiList: {[name: string]: XpellMessage} = {
             _user_id: undefined,
             _conversation_id: undefined,
             _prompt: undefined,
+            _generate_voice: false
+        }
+    },
+
+    "get-answer-from-voice": {
+        _module: "conversation-manager",
+        _op: "get-answer-from-voice",
+        _params: {
+            _user_id: undefined,
+            _conversation_id: undefined,
+            _voice_data: undefined, //base64 encoded voice data
             _generate_voice: false
         }
     }
@@ -70,6 +86,20 @@ class AimeApiMessageGenerator {
         msg._params._user_id = userId
         msg._params._conversation_id = conversationId
         msg._params._prompt = prompt
+        msg._params._generate_voice = voice
+        return msg
+    }
+
+
+    getAnswerFromVoiceXMessage(userId: string, conversationId: string, voiceData: string,voice:boolean) {
+        if (!userId) throw new Error("User ID is required")
+        if (!conversationId) throw new Error("Conversation ID is required")
+        if (!voiceData) throw new Error("Voice data is required")
+
+        const msg = AimeApiList["get-answer-from-voice"]
+        msg._params._user_id = userId
+        msg._params._conversation_id = conversationId
+        msg._params._voice_data = voiceData
         msg._params._generate_voice = voice
         return msg
     }
@@ -172,6 +202,35 @@ export class AimeAPI {
     async sendPrompt(prompt: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
         const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt,generateVoice)
         return await Wormholes.sendSync(getAnswerCommand, true)
+    }
+
+
+    /**
+     * This function sends a voice prompt to the Aime server and returns the response
+     * @param voiceFileName 
+     * @param session 
+     * @param generateVoice 
+     * @returns 
+     */
+    async sendVoicePrompt(voiceFileName: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
+        try {
+            const filePath = path.join(__dirname, voiceFileName)
+            console.log("Reading voice file " + filePath);
+            if(fs.existsSync(filePath)){
+                try {
+                    
+                    const voiceData = fs.readFileSync(filePath).toString('base64')
+                    const getAnswerFromVoiceCommand = this._xp.getAnswerFromVoiceXMessage(session._user_id, session._conversation_id, voiceData,generateVoice)
+                    const rres =  await Wormholes.sendSync(getAnswerFromVoiceCommand, true)
+                    return rres
+                } catch (error) {
+                    throw new Error("Error reading voice file " + voiceFileName + " : " + error)
+                }
+            } else throw new Error("Voice file not found")
+        } catch (error) {
+            throw new Error("Error reading voice file " + voiceFileName + " : " + error)
+        }
+
     }
 
 }

@@ -11,4 +11,5 @@ export type AimeSession = {
 export type AimePromptResponse = {
   _conversation_item_id: string,
   _npc_response: string,
+  _voice_url?: string
 }
