@@ -215,10 +215,8 @@ export class AimeAPI {
     async sendVoicePrompt(voiceFileName: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
         try {
             const filePath = path.join(__dirname, voiceFileName)
-            console.log("Reading voice file " + filePath);
             if(fs.existsSync(filePath)){
                 try {
-                    
                     const voiceData = fs.readFileSync(filePath).toString('base64')
                     const getAnswerFromVoiceCommand = this._xp.getAnswerFromVoiceXMessage(session._user_id, session._conversation_id, voiceData,generateVoice)
                     const rres =  await Wormholes.sendSync(getAnswerFromVoiceCommand, true)
@@ -230,10 +228,11 @@ export class AimeAPI {
         } catch (error) {
             throw new Error("Error reading voice file " + voiceFileName + " : " + error)
         }
-
     }
 
 }
 
 
 export default AimeAPI
+
+
