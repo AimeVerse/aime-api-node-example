@@ -48,7 +48,8 @@ export const AimeApiList: {[name: string]: XpellMessage} = {
             _user_id: undefined,
             _conversation_id: undefined,
             _voice_data: undefined, //base64 encoded voice data
-            _generate_voice: false
+            _generate_voice: false,
+            _find_intent: false,
         }
     },
 
@@ -123,14 +124,16 @@ class AimeApiMessageGenerator {
         msg._params._conversation_id = conversationId
         msg._params._voice_data = voiceData
         msg._params._generate_voice = voice
+
         if(findIntent){
             if(!intents) throw new Error("Intents are required")
             msg._params._find_intent = true
-            intents.forEach((intent, index) => {
-                if(intent != ""){
-                    msg._params._intents += intent + ","
-                }
-            })
+            // intents.forEach((intent, index) => {
+            //     if(intent != ""){
+            //         msg._params._intents += intent + ","
+            //     }
+            // })
+            msg._params._intents = intents
 
         }
         // console.log("Message ",msg);
@@ -247,6 +250,8 @@ export class AimeAPI {
      * @param prompt - The prompt to send to the Aime server (can be a question in a conversation or a command to the NPC)
      * @param session - The session object returned from startAnonymousSession
      * @param generateVoice - If true, the server will generate a voice response
+     * @param findIntent - If true, the server will try to find the intent of the prompt
+     * @param intents - The intents to find in the prompt
      * @returns AimePromptResponse
      * {
      *     _conversation_item_id: string, // the id of the conversation item
@@ -258,6 +263,14 @@ export class AimeAPI {
         const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt,generateVoice,findIntent,intents)
         return await Wormholes.sendSync(getAnswerCommand, true)
     }
+
+    /**
+     * Find the intent of a prompt from a list of intents
+     * @param intents - The list of intents to find (comma separated strings)
+     * @param prompt - The prompt to find the intents in
+     * @param session 
+     * @returns 
+     */
     async findIntent(intents:Array<string>, prompt: string,session:AimeSession): Promise<any>{
         const getIntentsCommand = this._xp.getIntentsXMessage(intents,prompt,session._user_id, session._conversation_id)
         return await Wormholes.sendSync(getIntentsCommand, true)
@@ -268,18 +281,20 @@ export class AimeAPI {
 
     /**
      * This function sends a voice prompt to the Aime server and returns the response
-     * @param voiceFileName 
-     * @param session 
-     * @param generateVoice 
+     * @param prompt - The prompt to send to the Aime server (can be a question in a conversation or a command to the NPC)
+     * @param session - The session object returned from startAnonymousSession
+     * @param generateVoice - If true, the server will generate a voice response
+     * @param findIntent - If true, the server will try to find the intent of the prompt 
+     * @param intents - The intents to find in the prompt
      * @returns 
      */
-    async sendVoicePrompt(voiceFileName: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
+    async sendVoicePrompt(voiceFileName: string,session:AimeSession,generateVoice:boolean = true,findIntent:boolean = false,intents?:Array<string>): Promise<AimePromptResponse>{
         try {
             const filePath = path.join(__dirname, voiceFileName)
             if(fs.existsSync(filePath)){
                 try {
                     const voiceData = fs.readFileSync(filePath).toString('base64')
-                    const getAnswerFromVoiceCommand = this._xp.getAnswerFromVoiceXMessage(session._user_id, session._conversation_id, voiceData,generateVoice)
+                    const getAnswerFromVoiceCommand = this._xp.getAnswerFromVoiceXMessage(session._user_id, session._conversation_id, voiceData,generateVoice,findIntent,intents)
                     const rres =  await Wormholes.sendSync(getAnswerFromVoiceCommand, true)
                     return rres
                 } catch (error) {

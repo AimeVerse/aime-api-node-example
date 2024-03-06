@@ -1,6 +1,6 @@
 {
   "name": "aime-api-node",
-  "version": "1.0.10",
+  "version": "1.0.2",
   "description": "Aime API for Node.js",
   "author": "Tamir Fridman <tamir@aimeverse.com>",
   "type": "module",

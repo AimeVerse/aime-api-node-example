@@ -1,9 +1,26 @@
 Aime Api Changelog
 =========================
 
-0.0.1:
+1.0.2
+-------
+= New APIs:
+    - sendVoicePrompt - send voice file instead of text prompt (same api as sendPrompt)
+    - findIntent - find intent in user prompt from given list of intents
+= API change:
+    - sendPrompt _find_intent parameter to find intent in user prompt from given list of intents
+
+1.0.1
+-------
+= API change:
+    - sendPrompt _generate_voice parameter to return voice file url (optional)
+
+1.0.0:
 -------
 - Wormholes configuration
 - API Class
 - API Client
+= APIs:
+    - getEnvName
+    - startAnonymousSession
+    - sendPrompt
 

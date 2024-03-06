@@ -32,32 +32,32 @@ async function main() {
         _xlog.log("Anonymous session created user-id:" +session._user_id + " conversation-id:" + session._conversation_id)
         
 
-        //send a prompt to the avatar and display the response
-        const prompt = "hi, my name is bond, james bond"
+        const intents = [ "room service", "get a taxi", "order food", "check in", "check out","spa inquiry" , "book a flight"]
         
-
-        //send another prompt to the avatar and display the response
         
-        // const prompt2 = "what is aime avatar?"
-        // // _xlog.log("Q:" , prompt2)
-        // const answer2 = await aimeApi.sendPrompt(prompt2,session,false)
-        // _xlog.log("A:",answer2._npc_response)
-        // _xlog.log("Response ",answer2)
-
-        const intents = ["order a pizza", "request towel", "get a taxi","directions to airport", "room service", "check in", "check out", "book a table", "book a flight","recommendations for a restaurant"]
-        const prompt3 = "I want to order 10 big pizzas"
-
-        // const answer3 = await aimeApi.findIntent(intents,prompt3,session)
-        // console.log("Intent Response ",answer3);
-        // const answer4 = await aimeApi.sendPrompt(prompt3,session,true,true,intents)
-        // console.log("Intent Response ",answer4);
-
-        
-
-
         const fileUrl = "../../assets/test.mp3" //project runs in dist/aime 
-        const answer = await aimeApi.sendVoicePrompt(fileUrl,session)
-        _xlog.log("A:",answer)
+        const npcResponseFromVoice = await aimeApi.sendVoicePrompt(fileUrl,session,false,true,intents)
+        _xlog.log("[Server Response]",npcResponseFromVoice)
+        if(npcResponseFromVoice._intents){
+            try {
+                const intent = JSON.parse(<string>npcResponseFromVoice._intents)
+                _xlog.log("[Intent]",intent);
+            } catch (error) {
+                _xlog.log("Error parsing intents",error);
+            }
+        }
+
+        const userPrompt = "I need 2 towels and 3 pillows."
+        const npcResponseFromText = await aimeApi.sendPrompt(userPrompt,session,false,true,intents)
+        _xlog.log("[Server Response]",npcResponseFromText);
+        if(npcResponseFromText._intents){
+            try {
+                const intent = JSON.parse(<string>npcResponseFromText._intents)
+                _xlog.log("[Intent]",intent);
+            } catch (error) {
+                _xlog.log("Error parsing intents",error);
+            }
+        }
 
     } catch (error) {
         _xlog.error("Error starting anonymous session" + error)
