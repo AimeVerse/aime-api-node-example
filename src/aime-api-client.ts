@@ -32,7 +32,7 @@ async function main() {
         _xlog.log("Anonymous session created user-id:" +session._user_id + " conversation-id:" + session._conversation_id)
         
 
-        const intents = [ "room service", "get a taxi", "order food", "check in", "check out","spa inquiry" , "book a flight"]
+        const intents = [ "general info","room service", "get a taxi", "order food", "check in", "check out","spa inquiry" , "book a flight"]
         
         
         const fileUrl = "../../assets/test.mp3" //project runs in dist/aime 
@@ -47,7 +47,7 @@ async function main() {
             }
         }
 
-        const userPrompt = "I need 2 towels and 3 pillows."
+        const userPrompt = "I need 2 pillows and one blanket"
         const npcResponseFromText = await aimeApi.sendPrompt(userPrompt,session,false,true,intents)
         _xlog.log("[Server Response]",npcResponseFromText);
         if(npcResponseFromText._intents){

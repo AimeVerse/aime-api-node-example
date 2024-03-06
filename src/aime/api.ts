@@ -100,11 +100,12 @@ class AimeApiMessageGenerator {
         if(findIntent){
             if(!intents) throw new Error("Intents are required")
             msg._params._find_intent = true
-            intents.forEach((intent, index) => {
-                if(intent != ""){
-                    msg._params._intents += intent + ","
-                }
-            })
+            // intents.forEach((intent, index) => {
+            //     if(intent != ""){
+            //         msg._params._intents += intent + ","
+            //     }
+            // })
+            msg._params._intents = intents.join(",")
 
         }
         // console.log("Message ",msg);
@@ -133,7 +134,7 @@ class AimeApiMessageGenerator {
             //         msg._params._intents += intent + ","
             //     }
             // })
-            msg._params._intents = intents
+            msg._params._intents = intents.join(",")
 
         }
         // console.log("Message ",msg);
@@ -156,9 +157,9 @@ class AimeApiMessageGenerator {
         msg._params._prompt = prompt
         //join the intents with a comma
         let strIntents:string = ""
-        intents.forEach((intent, index) => {
-            strIntents += intent + ","
-        })
+        
+
+        strIntents = intents.join(",")
         
         
 
@@ -310,5 +311,6 @@ export class AimeAPI {
 
 
 export default AimeAPI
+
 
 
