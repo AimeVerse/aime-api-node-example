@@ -113,7 +113,7 @@ class AimeApiMessageGenerator {
     }
 
 
-    getAnswerFromVoiceXMessage(userId: string, conversationId: string, voiceData: string,voice:boolean) {
+    getAnswerFromVoiceXMessage(userId: string, conversationId: string, voiceData: string,voice:boolean,findIntent:boolean = false,intents?:Array<string>) {
         if (!userId) throw new Error("User ID is required")
         if (!conversationId) throw new Error("Conversation ID is required")
         if (!voiceData) throw new Error("Voice data is required")
@@ -139,19 +139,6 @@ class AimeApiMessageGenerator {
         return msg
     }
 
-
-    getAnswerFromVoiceXMessage(userId: string, conversationId: string, voiceData: string,voice:boolean) {
-        if (!userId) throw new Error("User ID is required")
-        if (!conversationId) throw new Error("Conversation ID is required")
-        if (!voiceData) throw new Error("Voice data is required")
-
-        const msg = AimeApiList["get-answer-from-voice"]
-        msg._params._user_id = userId
-        msg._params._conversation_id = conversationId
-        msg._params._voice_data = voiceData
-        msg._params._generate_voice = voice
-        return msg
-    }
 
     getServerAuthXMessage(token: string) {
         if (!token) throw new Error("Token is required")
