@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { _x, _xem, _xlog } from "xpell-node"
+import { Wormholes, _x, _xem, _xlog } from "xpell-node"
 
 import {AimeAPI} from "./aime/api.js"
 import { AimeSession } from './aime/api-types.js'
@@ -38,11 +38,20 @@ async function main() {
 
         //send another prompt to the avatar and display the response
         
-        const prompt2 = "what is aime avatar?"
-        _xlog.log("Q:" , prompt2)
-        const answer2 = await aimeApi.sendPrompt(prompt2,session)
-        _xlog.log("A:",answer2._npc_response)
-        _xlog.log("Response ",answer2)
+        // const prompt2 = "what is aime avatar?"
+        // // _xlog.log("Q:" , prompt2)
+        // const answer2 = await aimeApi.sendPrompt(prompt2,session,false)
+        // _xlog.log("A:",answer2._npc_response)
+        // _xlog.log("Response ",answer2)
+
+        const intents = ["order a pizza", "request towel", "get a taxi","directions to airport", "room service", "check in", "check out", "book a table", "book a flight","recommendations for a restaurant"]
+        const prompt3 = "I want to order 10 big pizzas"
+
+        // const answer3 = await aimeApi.findIntent(intents,prompt3,session)
+        // console.log("Intent Response ",answer3);
+        // const answer4 = await aimeApi.sendPrompt(prompt3,session,true,true,intents)
+        // console.log("Intent Response ",answer4);
+
         
 
 
@@ -51,12 +60,11 @@ async function main() {
         _xlog.log("A:",answer)
 
     } catch (error) {
-        _xlog.error("Error starting anonymous session")
+        _xlog.error("Error starting anonymous session" + error)
     } finally {
         aimeApi.disconnect()
     }
 }
-
 
 
 main().then(async () => {

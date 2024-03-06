@@ -50,7 +50,16 @@ export const AimeApiList: {[name: string]: XpellMessage} = {
             _voice_data: undefined, //base64 encoded voice data
             _generate_voice: false
         }
-    }
+    },
+
+    "find-intent":{
+        _module: "conversation-manager",
+        _op: "find-intent",
+        _params: {
+            _prompt: undefined,
+            _intent: undefined
+        }
+    },
     
 }
 
@@ -78,7 +87,7 @@ class AimeApiMessageGenerator {
         return msg
     }
 
-    getAnswerXMessage(userId: string, conversationId: string, prompt: string,voice:boolean) {
+    getAnswerXMessage(userId: string, conversationId: string, prompt: string,voice:boolean,findIntent:boolean = false,intents?:Array<string>) {
         if (!userId) throw new Error("User ID is required")
         if (!conversationId) throw new Error("Conversation ID is required")
         if (!prompt) throw new Error("Prompt is required")
@@ -87,6 +96,46 @@ class AimeApiMessageGenerator {
         msg._params._conversation_id = conversationId
         msg._params._prompt = prompt
         msg._params._generate_voice = voice
+        if(findIntent){
+            if(!intents) throw new Error("Intents are required")
+            msg._params._find_intent = true
+            intents.forEach((intent, index) => {
+                if(intent != ""){
+                    msg._params._intents += intent + ","
+                }
+            })
+
+        }
+        // console.log("Message ",msg);
+        
+
+        return msg
+    }
+
+
+    getAnswerFromVoiceXMessage(userId: string, conversationId: string, voiceData: string,voice:boolean) {
+        if (!userId) throw new Error("User ID is required")
+        if (!conversationId) throw new Error("Conversation ID is required")
+        if (!voiceData) throw new Error("Voice data is required")
+
+        const msg = AimeApiList["get-answer-from-voice"]
+        msg._params._user_id = userId
+        msg._params._conversation_id = conversationId
+        msg._params._voice_data = voiceData
+        msg._params._generate_voice = voice
+        if(findIntent){
+            if(!intents) throw new Error("Intents are required")
+            msg._params._find_intent = true
+            intents.forEach((intent, index) => {
+                if(intent != ""){
+                    msg._params._intents += intent + ","
+                }
+            })
+
+        }
+        // console.log("Message ",msg);
+        
+
         return msg
     }
 
@@ -109,6 +158,25 @@ class AimeApiMessageGenerator {
         const msg = AimeApiList["server-auth"]
         msg._params._t = token
         return msg
+    }
+
+    getIntentsXMessage(intents:Array<string>, prompt: string,userId:string, conversationId:string) {
+        if (!intents || !prompt) throw new Error("Intents and prompt are required")
+        const msg = AimeApiList["find-intent"]
+        msg._params._prompt = prompt
+        //join the intents with a comma
+        let strIntents:string = ""
+        intents.forEach((intent, index) => {
+            strIntents += intent + ","
+        })
+        
+        
+
+        msg._params._intents = strIntents
+        msg._params._user_id = userId
+        msg._params._conversation_id = conversationId
+        return msg
+        
     }
 }
 
@@ -199,10 +267,16 @@ export class AimeAPI {
      *     _voice_url?: string // the url of the voice response (if generated)
      * }
      */
-    async sendPrompt(prompt: string,session:AimeSession,generateVoice:boolean = true): Promise<AimePromptResponse>{
-        const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt,generateVoice)
+    async sendPrompt(prompt: string,session:AimeSession,generateVoice:boolean = true,findIntent:boolean = false,intents?:Array<string>): Promise<AimePromptResponse>{
+        const getAnswerCommand = this._xp.getAnswerXMessage(session._user_id, session._conversation_id, prompt,generateVoice,findIntent,intents)
         return await Wormholes.sendSync(getAnswerCommand, true)
     }
+    async findIntent(intents:Array<string>, prompt: string,session:AimeSession): Promise<any>{
+        const getIntentsCommand = this._xp.getIntentsXMessage(intents,prompt,session._user_id, session._conversation_id)
+        return await Wormholes.sendSync(getIntentsCommand, true)
+    }
+
+
 
 
     /**
